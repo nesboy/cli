@@ -1,0 +1,22 @@
+Configuration:
+  status: warn
+
+  appenders:
+    Console:
+      name: CONSOLE
+      PatternLayout:
+        Pattern: "%msg%n"
+
+    File:
+      - name: FILE
+        fileName: logs/app.log
+        append: true
+        PatternLayout:
+          pattern: "[%level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c - %msg%n"
+
+  Loggers:
+    Root:
+      level: INFO
+      AppenderRef:
+        - ref: CONSOLE
+        - ref: FILE
