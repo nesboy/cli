@@ -12,11 +12,16 @@ repositories {
 }
 
 dependencies {
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.1")
-    implementation("com.github.ajalt.clikt:clikt:3.5.1")
-    implementation("org.apache.logging.log4j:log4j-api:2.19.0")
-    implementation("org.apache.logging.log4j:log4j-api-kotlin:1.2.0")
-    implementation("org.apache.logging.log4j:log4j-core:2.19.0")
+    val jacksonVersion: String by project
+    val cliktVersion: String by project
+    val log4jVersion: String by project
+    val log4jKotlinVersion: String by project
+
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion")
+    implementation("com.github.ajalt.clikt:clikt:$cliktVersion")
+    implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
+    implementation("org.apache.logging.log4j:log4j-api-kotlin:$log4jKotlinVersion")
+    implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
 
     testImplementation(kotlin("test"))
 }
