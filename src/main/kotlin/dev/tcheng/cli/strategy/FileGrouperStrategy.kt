@@ -6,9 +6,7 @@ sealed interface FileGrouperStrategy {
     fun doResolveDirectoryName(file: File): String
 
     fun resolveDirectoryName(file: File): String {
-        if (!file.isFile) {
-            throw IllegalStateException("$file is not a file")
-        }
+        check(file.isFile) { "$file is not a File" }
         return doResolveDirectoryName(file)
     }
 }

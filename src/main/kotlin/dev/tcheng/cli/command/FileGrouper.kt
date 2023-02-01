@@ -21,23 +21,29 @@ import kotlin.io.path.createDirectories
 import kotlin.io.path.notExists
 import kotlin.io.path.pathString
 
-object FileGrouper : CliktCommand(
-    help = """Copies all files from a source folder to sub-folders based on some grouping strategy.
-    """.trimMargin()
-), Logging {
+object FileGrouper :
+    CliktCommand(
+        help = """Copies all files from a source folder to sub-folders based on some grouping strategy.
+        """.trimMargin()
+    ),
+    Logging {
     private val inputPath by option(
-        names = arrayOf("-i"), help = "Input path containing files to group"
+        names = arrayOf("-i"),
+        help = "Input path containing files to group"
     ).path(mustExist = true, canBeDir = true, canBeFile = false, canBeSymlink = false)
         .required()
     private val outputPath by option(
-        names = arrayOf("-o"), help = "Output path containing group sub-folders with files (default: input path)"
+        names = arrayOf("-o"),
+        help = "Output path containing group sub-folders with files (default: input path)"
     ).path(mustExist = true, canBeDir = true, canBeFile = false, canBeSymlink = false)
         .defaultLazy { inputPath }
     private val isRecursive by option(
-        names = arrayOf("-r"), help = "Recursively process files in source path (default: disabled)"
+        names = arrayOf("-r"),
+        help = "Recursively process files in source path (default: disabled)"
     ).flag(default = false)
     private val fileGrouping by option(
-        names = arrayOf("-g"), help = "File grouping strategy that determines which sub-folders to create"
+        names = arrayOf("-g"),
+        help = "File grouping strategy that determines which sub-folders to create"
     ).enum<FileGrouping>(ignoreCase = true)
         .default(FileGrouping.FIRST_ALPHA_NUMERIC_CHARACTER)
 
@@ -47,7 +53,7 @@ object FileGrouper : CliktCommand(
             .maxDepth(if (isRecursive) Integer.MAX_VALUE else 1)
             .filter { it.isFile }
             .groupBy {
-                when(fileGrouping) {
+                when (fileGrouping) {
                     FileGrouping.EXTENSION ->
                         ExtensionStrategy.resolveDirectoryName(it)
                     FileGrouping.FIRST_ALPHA_NUMERIC_CHARACTER ->
