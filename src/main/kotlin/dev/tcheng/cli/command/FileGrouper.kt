@@ -26,7 +26,8 @@ import kotlin.io.path.pathString
 object FileGrouper :
     CliktCommand(
         help = """Copies all files from a source folder to sub-folders based on some grouping strategy.
-        """.trimMargin()
+        """.trimMargin(),
+        printHelpOnEmptyArgs = true
     ),
     Logging {
     private val inputPath by option(

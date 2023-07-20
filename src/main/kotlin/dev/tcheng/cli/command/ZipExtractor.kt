@@ -16,7 +16,8 @@ import kotlin.io.path.pathString
 
 object ZipExtractor :
     CliktCommand(
-        help = "Extracts all zip files in a given folder."
+        help = "Extracts all zip files in a given folder.",
+        printHelpOnEmptyArgs = true
     ),
     Logging {
     private val inputPath by option(
@@ -26,11 +27,11 @@ object ZipExtractor :
         .required()
     private val isRecursive by option(
         names = arrayOf("-r"),
-        help = "Recursively process files in input path (default: true)"
+        help = "Recursively process files in input path (default: enabled)"
     ).flag(default = true)
     private val shouldDeleteZipFile by option(
         names = arrayOf("-d"),
-        help = "Delete the zip file after it has been extracted (default: true)"
+        help = "Delete the zip file after it has been extracted (default: enabled)"
     ).flag(default = true)
 
     override fun run() {
