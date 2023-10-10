@@ -1,6 +1,6 @@
 plugins {
-    id("kotlin-conventions")
-    id("detekt-conventions")
+    id("dev.tcheng.conventions-kotlin.kotlin") version "0.0.1"
+    id("dev.tcheng.conventions-kotlin.detekt") version "0.0.1"
     application
 }
 
@@ -8,6 +8,7 @@ group = "dev.tcheng"
 version = "0.0.1"
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -17,6 +18,7 @@ dependencies {
     val log4jVersion: String by project
     val log4jKotlinVersion: String by project
 
+    compileOnly("dev.tcheng.conventions-kotlin:plugin:0.0.1")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion")
     implementation("com.github.ajalt.clikt:clikt:$cliktVersion")
     implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
