@@ -18,7 +18,7 @@ dependencies {
     val log4jVersion: String by project
     val log4jKotlinVersion: String by project
 
-    compileOnly("dev.tcheng.conventions-kotlin:plugin:0.0.1")
+    compileOnly("dev.tcheng:conventions-kotlin:0.0.1")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion")
     implementation("com.github.ajalt.clikt:clikt:$cliktVersion")
     implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
