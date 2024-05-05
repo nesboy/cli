@@ -13,17 +13,12 @@ repositories {
 }
 
 dependencies {
-    val jacksonVersion: String by project
-    val cliktVersion: String by project
-    val log4jVersion: String by project
-    val log4jKotlinVersion: String by project
-
-    compileOnly("dev.tcheng:conventions-kotlin:0.0.1")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion")
-    implementation("com.github.ajalt.clikt:clikt:$cliktVersion")
-    implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
-    implementation("org.apache.logging.log4j:log4j-api-kotlin:$log4jKotlinVersion")
-    implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
+    compileOnly(lib.conventions.kotlin)
+    implementation(lib.jackson.dataformat.yaml)
+    implementation(lib.clikt)
+    implementation(lib.log4j.api)
+    implementation(lib.log4j.api.kotlin)
+    implementation(lib.log4j.core)
 
     testImplementation(kotlin("test"))
 }
