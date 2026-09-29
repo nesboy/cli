@@ -3,8 +3,8 @@ package dev.tcheng.cli.command
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.path
 import org.apache.logging.log4j.kotlin.Logging
 import java.io.File
@@ -20,27 +20,30 @@ object ZipExtractor : CliktCommand(), Logging {
 
     override val printHelpOnEmptyArgs = true
 
-    private val inputPath by option(
+    private val inputPaths by option(
         names = arrayOf("-i"),
-        help = "Input path containing zip files to extract",
+        help = "Input path(s) containing zip files to extract",
     ).path(mustExist = true, canBeDir = true, canBeFile = false, canBeSymlink = false)
-        .required()
+        .multiple(required = true)
+
     private val isRecursive by option(
         names = arrayOf("-r"),
         help = "Recursively process files in input path (default: enabled)",
     ).flag(default = true)
+
     private val shouldDeleteZipFile by option(
         names = arrayOf("-d"),
         help = "Delete the zip file after it has been extracted (default: enabled)",
     ).flag(default = true)
 
     override fun run() {
-        inputPath.toFile()
-            .walk()
-            .maxDepth(if (isRecursive) Integer.MAX_VALUE else 1)
-            .asSequence()
-            .filter { it.isFile && it.extension == "zip" }
-            .forEach { processFile(it) }
+        inputPaths.forEach { inputPath ->
+            inputPath.toFile()
+                .walk()
+                .maxDepth(if (isRecursive) Integer.MAX_VALUE else 1)
+                .filter { it.isFile && it.extension == "zip" }
+                .forEach { processFile(it) }
+        }
     }
 
     private fun processFile(file: File) {

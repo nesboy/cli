@@ -3,10 +3,9 @@ package dev.tcheng.cli.command
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.options.default
-import com.github.ajalt.clikt.parameters.options.defaultLazy
 import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.path
 import dev.tcheng.cli.model.FileGrouping
@@ -31,17 +30,17 @@ object FileGrouper : CliktCommand(), Logging {
 
     override val printHelpOnEmptyArgs = true
 
-    private val inputPath by option(
+    private val inputPaths by option(
         names = arrayOf("-i"),
-        help = "Input path containing files to group",
+        help = "Input path(s) containing files to group",
     ).path(mustExist = true, canBeDir = true, canBeFile = false, canBeSymlink = false)
-        .required()
+        .multiple(required = true)
 
-    private val outputPath by option(
+    private val outputPaths by option(
         names = arrayOf("-o"),
-        help = "Output path containing group sub-folders with files (default: input path)",
+        help = "Output path(s) containing group sub-folders with files (default: input paths)",
     ).path(mustExist = true, canBeDir = true, canBeFile = false, canBeSymlink = false)
-        .defaultLazy { inputPath }
+        .multiple(required = false)
 
     private val isRecursive by option(
         names = arrayOf("-r"),
@@ -58,25 +57,38 @@ object FileGrouper : CliktCommand(), Logging {
         names = arrayOf("-t"),
         help = "Mode of transferring files",
     ).enum<TransferMode>(ignoreCase = true)
-        .default(TransferMode.COPY)
+        .default(TransferMode.MOVE)
 
     override fun run() {
-        inputPath.toFile()
-            .walk()
-            .maxDepth(if (isRecursive) Integer.MAX_VALUE else 1)
-            .filter { it.isFile }
-            .groupBy {
-                when (fileGrouping) {
-                    FileGrouping.EXTENSION ->
-                        ExtensionStrategy.resolveDirectoryName(it)
+        val resolvedOutputPaths = this.resolveOutputPaths()
+        val inputToOutputPaths = inputPaths.zip(resolvedOutputPaths)
 
-                    FileGrouping.FIRST_ALPHA_NUMERIC_CHARACTER ->
-                        FirstAlphaNumericCharacterStrategy.resolveDirectoryName(it)
+        inputToOutputPaths.forEach { (inputPath, outputPath) ->
+            inputPath.toFile()
+                .walk()
+                .maxDepth(if (isRecursive) Integer.MAX_VALUE else 1)
+                .filter { it.isFile }
+                .groupBy {
+                    when (fileGrouping) {
+                        FileGrouping.EXTENSION ->
+                            ExtensionStrategy.resolveDirectoryName(it)
+
+                        FileGrouping.FIRST_ALPHA_NUMERIC_CHARACTER ->
+                            FirstAlphaNumericCharacterStrategy.resolveDirectoryName(it)
+                    }
                 }
-            }
-            .forEach { (directoryName, files) ->
-                processFiles(outputPath, directoryName, files)
-            }
+                .forEach { (directoryName, files) ->
+                    processFiles(outputPath, directoryName, files)
+                }
+        }
+    }
+
+    private fun resolveOutputPaths(): List<Path> {
+        if (outputPaths.isNotEmpty() && outputPaths.size != inputPaths.size) {
+            throw IllegalArgumentException("outputPaths does not match size of inputPaths")
+        }
+
+        return outputPaths.ifEmpty { inputPaths }
     }
 
     private fun processFiles(targetPath: Path, directoryName: String, files: List<File>) {
