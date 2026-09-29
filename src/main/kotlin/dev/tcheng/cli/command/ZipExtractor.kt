@@ -1,6 +1,7 @@
 package dev.tcheng.cli.command
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
@@ -14,24 +15,23 @@ import kotlin.io.path.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.pathString
 
-object ZipExtractor :
-    CliktCommand(
-        help = "Extracts all zip files in a given folder.",
-        printHelpOnEmptyArgs = true
-    ),
-    Logging {
+object ZipExtractor : CliktCommand(), Logging {
+    override fun help(context: Context): String = "Extracts all zip files in a given folder."
+
+    override val printHelpOnEmptyArgs = true
+
     private val inputPath by option(
         names = arrayOf("-i"),
-        help = "Input path containing zip files to extract"
+        help = "Input path containing zip files to extract",
     ).path(mustExist = true, canBeDir = true, canBeFile = false, canBeSymlink = false)
         .required()
     private val isRecursive by option(
         names = arrayOf("-r"),
-        help = "Recursively process files in input path (default: enabled)"
+        help = "Recursively process files in input path (default: enabled)",
     ).flag(default = true)
     private val shouldDeleteZipFile by option(
         names = arrayOf("-d"),
-        help = "Delete the zip file after it has been extracted (default: enabled)"
+        help = "Delete the zip file after it has been extracted (default: enabled)",
     ).flag(default = true)
 
     override fun run() {

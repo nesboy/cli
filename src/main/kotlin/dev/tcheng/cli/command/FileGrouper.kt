@@ -1,6 +1,7 @@
 package dev.tcheng.cli.command
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.defaultLazy
 import com.github.ajalt.clikt.parameters.options.flag
@@ -23,39 +24,39 @@ import kotlin.io.path.moveTo
 import kotlin.io.path.notExists
 import kotlin.io.path.pathString
 
-object FileGrouper :
-    CliktCommand(
-        help = """Copies all files from a source folder to sub-folders based on some grouping strategy.
-        """.trimMargin(),
-        printHelpOnEmptyArgs = true
-    ),
-    Logging {
+object FileGrouper : CliktCommand(), Logging {
+    override fun help(context: Context): String =
+        """Copies all files from a source folder to sub-folders based on some grouping strategy.
+        """.trimMargin()
+
+    override val printHelpOnEmptyArgs = true
+
     private val inputPath by option(
         names = arrayOf("-i"),
-        help = "Input path containing files to group"
+        help = "Input path containing files to group",
     ).path(mustExist = true, canBeDir = true, canBeFile = false, canBeSymlink = false)
         .required()
 
     private val outputPath by option(
         names = arrayOf("-o"),
-        help = "Output path containing group sub-folders with files (default: input path)"
+        help = "Output path containing group sub-folders with files (default: input path)",
     ).path(mustExist = true, canBeDir = true, canBeFile = false, canBeSymlink = false)
         .defaultLazy { inputPath }
 
     private val isRecursive by option(
         names = arrayOf("-r"),
-        help = "Recursively process files in source path (default: disabled)"
+        help = "Recursively process files in source path (default: disabled)",
     ).flag(default = false)
 
     private val fileGrouping by option(
         names = arrayOf("-g"),
-        help = "File grouping strategy that determines which sub-folders to create"
+        help = "File grouping strategy that determines which sub-folders to create",
     ).enum<FileGrouping>(ignoreCase = true)
         .default(FileGrouping.FIRST_ALPHA_NUMERIC_CHARACTER)
 
     private val transferMode by option(
         names = arrayOf("-t"),
-        help = "Mode of transferring files"
+        help = "Mode of transferring files",
     ).enum<TransferMode>(ignoreCase = true)
         .default(TransferMode.COPY)
 

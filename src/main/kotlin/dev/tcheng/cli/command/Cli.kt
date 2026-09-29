@@ -11,7 +11,7 @@ object Cli : NoOpCliktCommand() {
                 MordantHelpFormatter(
                     context = it,
                     showDefaultValues = true,
-                    showRequiredTag = true
+                    showRequiredTag = true,
                 )
             }
         }

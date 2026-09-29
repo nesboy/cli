@@ -12,8 +12,7 @@ sealed interface FileGrouperStrategy {
 }
 
 object ExtensionStrategy : FileGrouperStrategy {
-    override fun doResolveDirectoryName(file: File) =
-        if (file.extension.isBlank()) "@" else file.extension.uppercase()
+    override fun doResolveDirectoryName(file: File) = if (file.extension.isBlank()) "@" else file.extension.uppercase()
 }
 
 object FirstAlphaNumericCharacterStrategy : FileGrouperStrategy {
