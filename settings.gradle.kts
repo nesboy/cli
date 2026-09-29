@@ -11,7 +11,7 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("lib") {
             version("jackson", "2.17.0")
-            version("log4j", "2.23.1")
+            version("log4j", "2.26.1")
 
             library("clikt", "com.github.ajalt.clikt:clikt:5.1.0")
             library("conventions-kotlin", "dev.tcheng:conventions-kotlin:0.0.1")

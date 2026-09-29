@@ -27,3 +27,9 @@ dependencies {
 application {
     mainClass.set("dev.tcheng.cli.MainKt")
 }
+
+graalvmNative {
+    metadataRepository {
+        enabled = true
+    }
+}
