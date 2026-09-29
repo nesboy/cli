@@ -1,6 +1,7 @@
 plugins {
     id("dev.tcheng.conventions-kotlin.kotlin") version "0.0.1"
     id("dev.tcheng.conventions-kotlin.detekt") version "0.0.1"
+    id("org.graalvm.buildtools.native") version "1.1.14"
     application
 }
 
